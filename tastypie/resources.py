@@ -2294,7 +2294,11 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save the main object.
-        bundle.obj.save()
+        # Pass in request user as an additional argument to suit my project's needs
+        if bundle.request.user:
+            bundle.obj.save(bundle.request.user)
+        else:
+            bundle.obj.save()
         bundle.objects_saved.add(self.create_identifier(bundle.obj))
 
         # Now pick up the M2M bits.
