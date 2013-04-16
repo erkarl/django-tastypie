@@ -2295,10 +2295,11 @@ class ModelResource(Resource):
 
         # Save the main object.
         # Pass in request user as an additional argument to suit my project's needs
-        if bundle.request.user:
-            bundle.obj.save(bundle.request.user)
-        else:
-            bundle.obj.save()
+        try:
+            if bundle.obj.created_by:
+                bundle.obj.save(bundle.request.user)
+        except AttributeError:
+                bundle.obj.save()
         bundle.objects_saved.add(self.create_identifier(bundle.obj))
 
         # Now pick up the M2M bits.
